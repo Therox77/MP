@@ -7,7 +7,7 @@ const Sidebar = () => (
       <ul className="space-y-4">
         <li>
           <Link to="/dashboard" className="hover:text-blue-400">
-            Dashboard
+            Inicio
           </Link>
         </li>
         <li>

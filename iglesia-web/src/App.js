@@ -5,11 +5,13 @@ import RegisterUser from './Pages/RegisterUser';
 import Dashboard from './Pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
+
 const App = () => (
   <Router>
     <Routes>
       <Route path="/" element={<LoginUser />} />
       <Route path="/register" element={<RegisterUser />} />
+     
       <Route
         path="/dashboard"
         element={
