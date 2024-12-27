@@ -12,7 +12,7 @@ const Dashboard = () => {
       <Header />
       <Sidebar />
       <main className="ml-64 pt-16 p-5">
-        <h2 className="text-3xl font-bold mb-8">Bienvenido a la Intranet</h2>
+        <h2 className="text-3xl font-bold mb-8">Gestión interna de membresía e información.</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card
             title="Miembros"

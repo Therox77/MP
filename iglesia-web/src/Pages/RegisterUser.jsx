@@ -1,102 +1,85 @@
-import React, { useEffect, useState } from 'react';
-import { ClipLoader } from 'react-spinners'; // Spinner
-import MembersTable from '../components/MembersTable'; // Tabla de miembros
-import { fetchUserRole } from '../services/usersService';
+import React, { useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 
-const Dashboard = () => {
-  const [members, setMembers] = useState([]);
-  const [role, setRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+const RegisterUser = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  // Fetch members from Supabase
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        const { data, error } = await supabase.from('profiles').select('id, nombre, correo, rol');
-        if (error) console.error('Error fetching members:', error);
-        else setMembers(data);
-      } catch (error) {
-        console.error('Error fetching members:', error);
-      }
-      setLoading(false); // Una vez se cargan los miembros, deja de cargar
-    };
-    fetchMembers();
-  }, []);
-
-  // Fetch user role from Supabase
-  useEffect(() => {
-    const getRole = async () => {
-      try {
-        const userId = supabase.auth.user()?.id;
-        const userRole = await fetchUserRole(userId);
-        setRole(userRole);
-      } catch (error) {
-        console.error('Error fetching role:', error);
-      }
-      setLoading(false); // Una vez se obtiene el rol, deja de cargar
-    };
-    getRole();
-  }, []);
-
-  // Mientras se cargan los datos, mostramos el spinner
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <ClipLoader color="#36d7b7" size={50} />
-      </div>
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    const { error } = await supabase.auth.signUp(
+      { email, password },
+      { data: { username } } // Almacena el nombre de usuario en el perfil
     );
-  }
+
+    if (error) {
+      alert('Error creando usuario: ' + error.message);
+    } else {
+      alert('Usuario creado exitosamente.');
+      setUsername('');
+      setEmail('');
+      setPassword('');
+    }
+  };
 
   return (
-    <div className="ml-64 p-5">
-      <h2 className="text-3xl font-bold mb-4">Dashboard</h2>
-
-      {/* Mostrar diferentes tarjetas dependiendo del rol del usuario */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {role === 'admin' && (
-          <div className="bg-blue-500 text-white p-4 rounded shadow-md">
-            <h3 className="text-xl font-bold">Miembros</h3>
-            <p>Gestión y estadísticas de miembros.</p>
+    <div className="flex justify-center items-center bg-gray-100 min-h-screen">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Registrar Nuevo Usuario</h2>
+        <form onSubmit={handleCreateUser}>
+          <div className="mb-4">
+            <label htmlFor="username" className="block text-sm font-semibold text-gray-600 mb-2">
+              Nombre de Usuario
+            </label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Nombre de Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
           </div>
-        )}
-        {role === 'admin' && (
-          <div className="bg-green-500 text-white p-4 rounded shadow-md">
-            <h3 className="text-xl font-bold">Eventos</h3>
-            <p>Calendario de actividades.</p>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-600 mb-2">
+              Correo Electrónico
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Correo del Usuario"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
           </div>
-        )}
-        {role === 'admin' && (
-          <div className="bg-yellow-500 text-white p-4 rounded shadow-md">
-            <h3 className="text-xl font-bold">Finanzas</h3>
-            <p>Reporte de ingresos y egresos.</p>
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-600 mb-2">
+              Contraseña
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Contraseña del Usuario"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
           </div>
-        )}
-        {role === 'user' && (
-          <div className="bg-red-500 text-white p-4 rounded shadow-md">
-            <h3 className="text-xl font-bold">Soporte</h3>
-            <p>Ayuda y contacto.</p>
-          </div>
-        )}
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded font-semibold hover:bg-blue-600 transition-all"
+          >
+            Crear Usuario
+          </button>
+        </form>
       </div>
-
-      {/* Mostrar la tabla de miembros solo si el rol es 'admin' */}
-      {role === 'admin' && (
-        <div>
-          <h3 className="text-2xl font-bold mb-4">Lista de Miembros</h3>
-          <MembersTable members={members} />
-        </div>
-      )}
-
-      {/* Si el rol es 'user', mostrar contenido diferente */}
-      {role === 'user' && (
-        <div>
-          <h3 className="text-2xl font-bold mb-4">Bienvenido, Usuario</h3>
-          <p>Este es tu panel de usuario. No tienes acceso a la gestión de miembros.</p>
-        </div>
-      )}
     </div>
   );
 };
 
-export default Dashboard;
+export default RegisterUser;
