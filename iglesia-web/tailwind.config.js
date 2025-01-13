@@ -16,6 +16,11 @@ module.exports = {
         yellow: {
           500: '#f59e0b',
         },
+        
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        
+
       },
     },
   },

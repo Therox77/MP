@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* Agregar en index.css */
 .table-container {
     max-height: 500px;

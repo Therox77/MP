@@ -6,6 +6,7 @@ import Dashboard from './Pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import MembersTable from './components/MembersTable';
 
+
 const App = () => (
   <Router>
     <Routes>
